@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diário de Estudo de Inglês MV</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Carrega a fonte do Post-it -->
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Estilo para o loader */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Estilo para formatar a saída da IA */
+        .ai-output {
+            white-space: pre-wrap;
+            background-color: #1f2937; /* bg-gray-800 */
+            border: 1px solid #374151; /* border-gray-700 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            margin-top: 1rem; /* mt-4 */
+            min-height: 100px;
+        }
+        
+        /* Estilos para o Post-it (MODIFICADO) */
+        .post-it {
+            font-family: 'Kalam', cursive;
+            color: #374151; /* Tailwind gray-700 */
+            padding: 1rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+            
+            /* Tamanho reduzido */
+            width: 200px; 
+            min-height: 100px; 
+            max-width: 80vw; /* Ajuste para telas pequenas */
+            
+            /* Centralização */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            
+            transition: transform 0.2s ease;
+            cursor: pointer; /* Indica clicável */
+        }
+        .post-it:hover {
+            transform: rotate(0deg) scale(1.05) !important; /* Efeito de hover anula rotação */
+        }
+        
+        /* Cores e Rotações */
+        .post-it-1 { background-color: #fef08a; transform: rotate(-3deg); } /* Amarelo */
+        .post-it-2 { background-color: #a7f3d0; transform: rotate(1.5deg); } /* Verde */
+        .post-it-3 { background-color: #bfd8ff; transform: rotate(-1.5deg); } /* Azul */
+        .post-it-4 { background-color: #fbcfe8; transform: rotate(2deg); } /* Rosa */
+        .post-it-5 { background-color: #fde68a; transform: rotate(-2.5deg); } /* Laranja */
+        .post-it-6 { background-color: #ddd6fe; transform: rotate(1deg); } /* Roxo */
+
+        .post-it-phrase {
+            font-size: 1.125rem; /* Levemente menor */
+            font-weight: 700;
+        }
+        .post-it-translation {
+            font-size: 0.875rem; /* Menor */
+            color: #4b5563; /* Tailwind gray-600 */
+            margin-top: 0.5rem; /* mt-2 */
+        }
+
+        /* Estilos do Modal de Quiz */
+        #quiz-overlay {
+            background-color: rgba(17, 24, 39, 0.9); /* bg-gray-900 com 90% de opacidade */
+        }
+        .quiz-option {
+            transition: background-color 0.2s ease-in-out;
+        }
+        .quiz-option.selected {
+            background-color: #3b82f6; /* bg-blue-600 */
+            color: white;
+        }
+        .quiz-option.correct {
+            background-color: #16a34a; /* bg-green-600 */
+            color: white;
+        }
+        .quiz-option.incorrect {
+            background-color: #dc2626; /* bg-red-600 */
+            color: white;
+        }
+        
+        /* Estilos da Revisão do Quiz */
+        #quiz-review-list {
+            max-height: 30vh; /* Altura máxima para a lista */
+            overflow-y: auto; /* Scroll se necessário */
+            text-align: left;
+            margin-top: 1.5rem; /* mt-6 */
+            border-top: 1px solid #374151; /* border-gray-700 */
+            padding-top: 1.5rem; /* pt-6 */
+        }
+        .review-item {
+            background-color: #1f2937; /* bg-gray-800 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
+            border-left: 4px solid #dc2626; /* border-red-600 */
+        }
+        .review-item p {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .review-item .review-question {
+            font-weight: 600; /* semibold */
+            color: #f3f4f6; /* gray-100 */
+        }
+        .review-item .review-your-answer {
+            color: #fca5a5; /* red-300 */
+        }
+        .review-item .review-correct-answer {
+            color: #86efac; /* green-300 */
+        }
+        .review-item .review-explanation {
+            font-style: italic;
+            color: #9ca3af; /* gray-400 */
+            font-size: 0.875rem; /* text-sm */
+            border-top: 1px solid #374151; /* border-gray-700 */
+            padding-top: 0.5rem; /* pt-2 */
+            margin-top: 0.75rem; /* mt-3 */
+        }
+
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-blue-400">Inglês - MV - Diário de Estudo</h1>
+            <p class="text-lg text-gray-400 mt-2">Você precisa aprender Inglês!</p>
+        </header>
+
+        <!-- Seção: Post-it (MODIFICADO COM 6) -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold text-center text-gray-300 mb-8" style="font-family: 'Inter', sans-serif;">Frases para Praticar</h2>
+            <div class="flex justify-center items-start gap-6 lg:gap-8 flex-wrap">
+                <!-- Post-it 1 -->
+                <div id="post-it-1" class="post-it post-it-1">
+                    <p id="post-it-phrase-1" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-1" class="post-it-translation">Carregando...</p>
+                </div>
+                <!-- Post-it 2 -->
+                <div id="post-it-2" class="post-it post-it-2">
+                    <p id="post-it-phrase-2" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-2" class="post-it-translation">Carregando...</p>
+                </div>
+                <!-- Post-it 3 -->
+                <div id="post-it-3" class="post-it post-it-3">
+                    <p id="post-it-phrase-3" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-3" class="post-it-translation">Carregando...</p>
+                </div>
+                <!-- Post-it 4 (NOVO) -->
+                <div id="post-it-4" class="post-it post-it-4">
+                    <p id="post-it-phrase-4" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-4" class="post-it-translation">Carregando...</p>
+                </div>
+                 <!-- Post-it 5 (NOVO) -->
+                <div id="post-it-5" class="post-it post-it-5">
+                    <p id="post-it-phrase-5" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-5" class="post-it-translation">Carregando...</p>
+                </div>
+                 <!-- Post-it 6 (NOVO) -->
+                <div id="post-it-6" class="post-it post-it-6">
+                    <p id="post-it-phrase-6" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-6" class="post-it-translation">Carregando...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Container principal com três colunas -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Coluna 1: Gerador de Quiz -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-xl flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4 text-white">1. Pratique com um Quiz</h2>
+                <label for="learned-input" class="block mb-2 font-medium text-gray-300">O que você aprendeu hoje?</label>
+                <textarea id="learned-input" rows="6" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Ex: Today I learned the words 'apple' (maçã), 'book' (livro), and 'car' (carro)."></textarea>
+                
+                <button id="generate-quiz-btn" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out disabled:opacity-50">
+                    Gerar Quiz
+                </button>
+
+                <div id="loading-quiz" class="hidden flex-col items-center justify-center mt-6">
+                    <div class="loader"></div>
+                    <p class="text-gray-400 mt-2">Gerando quiz...</p>
+                </div>
+            </div>
+
+            <!-- Coluna 2: Tira-Dúvidas -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-xl flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4 text-white">2. Tire suas Dúvidas</h2>
+                <label for="question-input" class="block mb-2 font-medium text-gray-300">Qual é a sua dúvida sobre inglês?</label>
+                <textarea id="question-input" rows="6" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Ex: Qual é a diferença entre 'much' e 'many'?"></textarea>
+                
+                <button id="get-explanation-btn" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out disabled:opacity-50">
+                    Obter Explicação
+                </button>
+
+                <div id="loading-explanation" class="hidden flex-col items-center justify-center mt-6">
+                    <div class="loader" style="border-top-color: #16a34a;"></div>
+                    <p class="text-gray-400 mt-2">Buscando explicação...</p>
+                </div>
+
+                <div id="explanation-output" class="ai-output mt-4 hidden"></div>
+            </div>
+
+            <!-- Coluna 3: Tradutor Rápido -->
+            <div class="bg-gray-800 p-6 rounded-lg shadow-xl flex flex-col">
+                <h2 class="text-2xl font-semibold mb-4 text-white">3. Tradutor Rápido</h2>
+                <label for="translate-input" class="block mb-2 font-medium text-gray-300">Digite para traduzir</label>
+                
+                <!-- Seletor de Idioma MODIFICADO -->
+                <div class="flex space-x-2 mb-3">
+                    <button id="translate-mode-auto" class="translate-mode-btn flex-1 bg-purple-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">Auto</button>
+                    <button id="translate-mode-toggle" class="translate-mode-btn flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">EN &rarr; PT</button>
+                </div>
+                
+                <textarea id="translate-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Ex: How are you?"></textarea>
+                
+                <button id="translate-btn" class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out disabled:opacity-50">
+                    Traduzir
+                </button>
+
+                <div id="loading-translation" class="hidden flex-col items-center justify-center mt-6">
+                    <div class="loader" style="border-top-color: #9333ea;"></div>
+                    <p class="text-gray-400 mt-2">Traduzindo...</p>
+                </div>
+
+                <!-- Saída separada (como solicitado) -->
+                <label for="translation-output" class="block mt-4 mb-2 font-medium text-gray-300">Tradução:</label>
+                <div id="translation-output" class="ai-output hidden"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal de Alerta Personalizado -->
+    <div id="alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(17, 24, 39, 0.9);">
+        <div class="bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6">
+            <h3 id="alert-title" class="text-xl font-bold text-yellow-400 mb-4">Atenção</h3>
+            <p id="alert-message" class="text-gray-300 mb-6">Ocorreu um erro.</p>
+            <button id="alert-close-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Explicação -->
+    <div id="explanation-modal-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4" style="background-color: rgba(17, 24, 39, 0.9);">
+        <div id="explanation-modal" class="relative bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full p-6 md:p-8">
+            
+            <!-- Botão de Fechar 'X' -->
+            <button id="explanation-modal-close-x-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <h2 class="text-2xl font-bold text-green-400 mb-4">Explicação</h2>
+            
+            <!-- Conteúdo da Explicação -->
+            <div id="explanation-modal-content" class="ai-output" style="max-height: 60vh; overflow-y: auto; background-color: #1f2937; border: none;">
+                <!-- Conteúdo será injetado pelo JS -->
+            </div>
+            
+            <!-- Botão de Fechar Inferior -->
+            <button id="explanation-modal-close-bottom-btn" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Quiz -->
+    <div id="quiz-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
+        <div id="quiz-modal" class="relative bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full p-6 md:p-8">
+            
+            <!-- Botão de Fechar Universal -->
+            <button id="quiz-close-universal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <!-- Tela da Pergunta -->
+            <div id="quiz-question-view">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-blue-400">Quiz Rápido</h2>
+                    <p id="quiz-progress" class="text-lg text-gray-400 font-medium">Pergunta 1 / 5</p>
+                </div>
+                
+                <p id="quiz-question" class="text-xl text-white mb-6">Qual o significado de 'apple'?</p>
+                
+                <div id="quiz-options" class="space-y-3">
+                    <!-- Opções serão injetadas pelo JS -->
+                </div>
+                
+                <p id="quiz-feedback" class="mt-4 text-lg font-medium hidden"></p>
+                
+                <button id="quiz-next-btn" class="hidden mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                    Próxima Pergunta
+                </button>
+            </div>
+
+            <!-- Tela de Resultados -->
+            <div id="quiz-results-view" class="hidden text-center">
+                <h2 class="text-3xl font-bold text-green-400 mb-4">Quiz Concluído!</h2>
+                <p id="quiz-score" class="text-2xl text-white mb-6">Você acertou 3 de 5!</p>
+                
+                <!-- (NOVO) Área de Revisão -->
+                <div id="quiz-review-area" class="hidden">
+                    <h3 class="text-xl font-semibold text-gray-200 mb-4">Revise seus erros:</h3>
+                    <div id="quiz-review-list">
+                        <!-- Itens de revisão serão injetados aqui -->
+                    </div>
+                </div>
+                
+                <button id="quiz-close-btn" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                    Fechar
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <script type="module">
+        // --- Configuração da API ---
+        const apiKey = "AIzaSyCtrEyKSS5OVtlWOg7WaqE0vJ-0ZksBTPY"; // Deixe em branco, será gerenciado pelo ambiente
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const FIVE_MINUTES_MS = 5 * 60 * 1000;
+        const TOTAL_POST_ITS = 6; // NOVO
+
+        // --- Lista de Frases para o Post-it ---
+        const learnedPhrases = [
+            { en: "What's the matter?", pt: "Qual é o problema?" },
+            { en: "Never mind.", pt: "Deixa pra lá." },
+            { en: "I'm looking forward to it.", pt: "Estou ansioso por isso." },
+            { en: "Take it easy.", pt: "Pega leve / Vá com calma." },
+            { en: "What do you mean?", pt: "O que você quer dizer?" },
+            { en: "It's up to you.", pt: "Você que decide." },
+            { en: "How's it going?", pt: "Como vai?" },
+            { en: "I appreciate it.", pt: "Eu agradeço." },
+            { en: "That makes sense.", pt: "Isso faz sentido." },
+            { en: "Could you repeat that, please?", pt: "Você poderia repetir, por favor?" },
+            { en: "I'm just kidding.", pt: "Estou só brincando." },
+            { en: "Keep up the good work.", pt: "Continue o bom trabalho." },
+            { en: "By the way...", pt: "A propósito..." },
+            { en: "Let me know.", pt: "Me avise." },
+            { en: "It rings a bell.", pt: "Isso me é familiar." },
+            { en: "I'll be right back.", pt: "Eu já volto." },
+            { en: "That's awesome!", pt: "Isso é incrível!" },
+            { en: "What's wrong?", pt: "O que há de errado?" },
+            { en: "Good for you.", pt: "Bom para você." },
+            { en: "I have no idea.", pt: "Não faço ideia." }
+        ];
+        
+        // --- Estado Global ---
+        // Inicializa com os 6 primeiros índices
+        let currentPostItIndices = Array.from(Array(TOTAL_POST_ITS).keys()); 
+        let lastPostItUpdate = 0; // Para o timer de 5 min
+
+        // --- Seletores do DOM (Principais) ---
+        const learnedInput = document.getElementById('learned-input');
+        const generateQuizBtn = document.getElementById('generate-quiz-btn');
+        const loadingQuiz = document.getElementById('loading-quiz');
+
+        const questionInput = document.getElementById('question-input');
+        const explainBtn = document.getElementById('get-explanation-btn');
+        const loadingExplanation = document.getElementById('loading-explanation');
+        const explanationOutput = document.getElementById('explanation-output');
+
+        const translateInput = document.getElementById('translate-input');
+        const translateBtn = document.getElementById('translate-btn');
+        const loadingTranslation = document.getElementById('loading-translation');
+        const translationOutput = document.getElementById('translation-output');
+
+        // --- Seletores do DOM (Tradutor) ---
+        const translateModeAuto = document.getElementById('translate-mode-auto');
+        const translateModeToggle = document.getElementById('translate-mode-toggle');
+        
+        // --- Seletores do DOM (Modal de Alerta) ---
+        const alertModal = document.getElementById('alert-modal');
+        const alertTitle = document.getElementById('alert-title');
+        const alertMessage = document.getElementById('alert-message');
+        const alertCloseBtn = document.getElementById('alert-close-btn');
+
+        // --- Seletores do DOM (Modal de Explicação) ---
+        const explanationModalOverlay = document.getElementById('explanation-modal-overlay');
+        const explanationModalContent = document.getElementById('explanation-modal-content');
+        const explanationModalCloseXBtn = document.getElementById('explanation-modal-close-x-btn');
+        const explanationModalCloseBottomBtn = document.getElementById('explanation-modal-close-bottom-btn');
+
+        // --- Seletores do DOM (Modal de Quiz) ---
+        const quizOverlay = document.getElementById('quiz-overlay');
+        const quizQuestionView = document.getElementById('quiz-question-view');
+        const quizResultsView = document.getElementById('quiz-results-view');
+        const quizProgress = document.getElementById('quiz-progress');
+        const quizQuestion = document.getElementById('quiz-question');
+        const quizOptions = document.getElementById('quiz-options');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const quizNextBtn = document.getElementById('quiz-next-btn');
+        const quizScore = document.getElementById('quiz-score');
+        const quizCloseBtn = document.getElementById('quiz-close-btn');
+        const quizCloseUniversalBtn = document.getElementById('quiz-close-universal-btn');
+        const quizReviewArea = document.getElementById('quiz-review-area');
+        const quizReviewList = document.getElementById('quiz-review-list');
+
+        // --- Estado do Quiz ---
+        let currentQuizQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answerSelected = false;
+        let translateMode = 'auto'; 
+        let userAnswers = []; 
+
+        // --- Esquemas e Prompts do Sistema ---
+
+        // Esquema JSON para o Quiz (MODIFICADO)
+        const quizSchema = {
+            type: "OBJECT",
+            properties: {
+                questions: {
+                    type: "ARRAY",
+                    items: {
+                        type: "OBJECT",
+                        properties: {
+                            question: { 
+                                type: "STRING",
+                                description: "A pergunta do quiz em inglês, baseada no texto do usuário."
+                            },
+                            options: {
+                                type: "ARRAY",
+                                description: "Um array de 3 ou 4 possíveis respostas em português (ou inglês, se for preencher lacuna).",
+                                items: { type: "STRING" },
+                                minItems: 3,
+                                maxItems: 4
+                            },
+                            correctAnswer: { 
+                                type: "STRING",
+                                description: "O texto exato de uma das 'options' que é a resposta correta."
+                            },
+                            explanation: { 
+                                type: "STRING",
+                                description: "Uma breve explicação (em português) de por que a resposta está correta, focando na tradução ou na regra gramatical."
+                            }
+                        },
+                        required: ["question", "options", "correctAnswer", "explanation"]
+                    },
+                    minItems: 5, 
+                    maxItems: 10 
+                }
+            },
+            required: ["questions"]
+        };
+
+        const systemPrompt_Quiz = `
+            Você é um professor de inglês. O usuário fornecerá um texto sobre o que aprendeu (ex: "apple (maçã), book (livro), a frase 'an apple a day'").
+            Crie um quiz de 5 a 10 perguntas baseadas *apenas* nesse texto.
+            Misture os tipos de perguntas:
+            1.  Tradução (Inglês -> Português): (ex: "Qual o significado de 'book'?", com opções em português).
+            2.  Tradução (Português -> Inglês): (ex: "Qual palavra significa 'maçã'?", com opções em inglês).
+            3.  Completar Frase: (ex: "Complete: 'An ___ a day keeps the doctor away.'", com opções em inglês).
+            
+            As opções de resposta devem ser 3 ou 4.
+            A 'correctAnswer' deve ser *exatamente* igual a uma das 'options'.
+            A 'explanation' deve ser uma explicação curta e clara, em português, do porquê a resposta é correta.
+            Responda *apenas* com o objeto JSON formatado de acordo com o esquema fornecido, sem negrito ou markdown.
+        `;
+
+        const systemPrompt_Explanation = `
+            Você é um tutor de inglês prestativo e amigável. O usuário fará uma pergunta sobre gramática ou vocabulário de inglês.
+            Explique o conceito de forma clara e simples, em português, como se fosse para um iniciante.
+            Use marcadores (bullet points) para organizar a explicação.
+            Sempre inclua exemplos práticos em inglês, com a tradução em português ao lado.
+            IMPORTANTE: Não use NENHUMA formatação de negrito (markdown **texto** ou tags HTML <b>). Apenas texto plano.
+        `;
+
+        // --- Lógica Principal ---
+
+        /**
+         * Mostra o modal de alerta personalizado.
+         */
+        function showAlert(title, message) {
+            if (alertTitle) alertTitle.textContent = title;
+            if (alertMessage) alertMessage.textContent = message;
+            if (alertModal) alertModal.classList.remove('hidden');
+        }
+        
+        if (alertCloseBtn) {
+            alertCloseBtn.addEventListener('click', () => alertModal.classList.add('hidden'));
+        }
+
+        /**
+         * Atualiza os 6 post-its com um novo set de frases (se 5 min passaram)
+         */
+        function updatePostIt() {
+            const currentTime = new Date().getTime();
+            
+            // Só atualiza se for a primeira vez ou se passaram 5 minutos
+            if (lastPostItUpdate === 0 || (currentTime - lastPostItUpdate > FIVE_MINUTES_MS)) {
+                lastPostItUpdate = currentTime;
+                
+                let newIndices = [];
+                let attempts = 0; // Prevenção de loop infinito
+                
+                while(newIndices.length < TOTAL_POST_ITS && attempts < 100) {
+                    const randomIndex = Math.floor(Math.random() * learnedPhrases.length);
+                    // Garante que o índice não esteja já na lista
+                    if (!newIndices.includes(randomIndex)) {
+                        newIndices.push(randomIndex);
+                    }
+                    attempts++;
+                }
+                
+                // Se falhar em obter 6 únicos (poucas frases), apenas preenche
+                while (newIndices.length < TOTAL_POST_ITS) {
+                    newIndices.push(Math.floor(Math.random() * learnedPhrases.length));
+                }
+                
+                currentPostItIndices = newIndices;
+                
+                for (let i = 0; i < TOTAL_POST_ITS; i++) {
+                    displayPostItPhrase(i + 1, currentPostItIndices[i]);
+                }
+            }
+        }
+        
+        /**
+         * Atualiza o conteúdo de um post-it específico.
+         */
+        function displayPostItPhrase(postItId, phraseIndex) {
+            const phrase = learnedPhrases[phraseIndex % learnedPhrases.length]; // Garante que o índice é válido
+            const phraseEl = document.getElementById(`post-it-phrase-${postItId}`);
+            const translationEl = document.getElementById(`post-it-translation-${postItId}`);
+
+            if (phraseEl && translationEl) {
+                phraseEl.textContent = phrase.en;
+                translationEl.textContent = phrase.pt;
+            } else {
+                console.error(`Elementos do post-it ${postItId} não encontrados.`);
+            }
+        }
+        
+        /**
+         * Pega uma nova frase aleatória para um post-it clicado.
+         */
+         function handlePostItClick(postItId) {
+             let newIndex;
+             let attempts = 0;
+             do {
+                 newIndex = Math.floor(Math.random() * learnedPhrases.length);
+                 attempts++;
+             // Garante que a nova frase não seja nenhuma das 6 já exibidas
+             } while (currentPostItIndices.includes(newIndex) && attempts < 50);
+             
+             // Atualiza o índice para este post-it (id é 1-based, array é 0-based)
+             currentPostItIndices[postItId - 1] = newIndex;
+             // Atualiza a exibição
+             displayPostItPhrase(postItId, newIndex);
+         }
+
+
+        /**
+         * Chama a API Gemini para respostas em TEXTO (Explicação, Tradução).
+         */
+        async function callGeminiText(userQuery, systemPrompt, outputElement, loadingElement, buttonElement) {
+            if (!outputElement || !loadingElement || !buttonElement) return;
+            
+            loadingElement.classList.remove('hidden');
+            loadingElement.classList.add('flex');
+            outputElement.classList.add('hidden');
+            outputElement.innerHTML = '';
+            buttonElement.disabled = true;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+            };
+
+            await makeApiCall(payload, (text) => {
+                outputElement.innerHTML = text; 
+                outputElement.classList.remove('hidden');
+            }, (error) => {
+                showAlert("Erro na API", `Ocorreu um erro: ${error.message}`);
+            }, () => {
+                loadingElement.classList.add('hidden');
+                loadingElement.classList.remove('flex');
+                buttonElement.disabled = false;
+            });
+        }
+
+        /**
+         * Chama a API Gemini para respostas em JSON (Quiz).
+         */
+        async function callGeminiJson(userQuery, systemPrompt, schema, loadingElement, buttonElement) {
+            if (!loadingElement || !buttonElement) return;
+
+            loadingElement.classList.remove('hidden');
+            loadingElement.classList.add('flex');
+            buttonElement.disabled = true;
+            buttonElement.textContent = 'Gerando Quiz...';
+            
+            if (learnedInput) learnedInput.value = '';
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: schema
+                }
+            };
+
+            await makeApiCall(payload, (jsonText) => {
+                try {
+                    const data = JSON.parse(jsonText);
+                    if (data.questions && data.questions.length > 0) {
+                        startQuiz(data.questions);
+                    } else {
+                        throw new Error("Formato de quiz inválido recebido da API.");
+                    }
+                } catch (e) {
+                    console.error("Erro ao parsear JSON do quiz:", e, jsonText);
+                    showAlert("Erro no Quiz", "Não consegui criar o quiz. Tente reformular o que você aprendeu.");
+                }
+            }, (error) => {
+                 showAlert("Erro na API", `Ocorreu um erro ao gerar o quiz: ${error.message}`);
+            }, () => {
+                loadingElement.classList.add('hidden');
+                loadingElement.classList.remove('flex');
+                buttonElement.disabled = false;
+                buttonElement.textContent = 'Gerar Quiz';
+            });
+        }
+
+
+        /**
+         * Função de 'fetch' reutilizável com retentativa (exponential backoff).
+         */
+        async function makeApiCall(payload, onSuccess, onError, onFinally) {
+            let retries = 0;
+            const maxRetries = 3;
+            let delay = 1000;
+
+            try {
+                while (retries < maxRetries) {
+                    try {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const result = await response.json();
+                        const candidate = result.candidates?.[0];
+                        const text = candidate?.content?.parts?.[0]?.text;
+
+                        if (text) {
+                            onSuccess(text);
+                            return; // Sucesso, sai da função
+                        } else {
+                            throw new Error("Resposta da API inválida ou vazia.");
+                        }
+
+                    } catch (error) {
+                        console.error(`Tentativa ${retries + 1} falhou:`, error);
+                        retries++;
+                        if (retries >= maxRetries) {
+                            throw error;
+                        } else {
+                            await new Promise(res => setTimeout(res, delay));
+                            delay *= 2;
+                        }
+                    }
+                }
+            } catch (error) {
+                onError(error);
+            } finally {
+                if (onFinally) onFinally();
+            }
+        }
+
+        // --- Lógica do Tradutor (MODIFICADO) ---
+        
+        /**
+         * Atualiza o modo de tradução e o estilo dos botões
+         */
+        function updateTranslateMode(newMode) {
+            translateMode = newMode;
+            
+            if (!translateModeAuto || !translateModeToggle) return;
+            
+            if (newMode === 'auto') {
+                translateModeAuto.classList.add('bg-purple-600');
+                translateModeAuto.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+                translateModeToggle.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                translateModeToggle.classList.remove('bg-purple-600');
+            } else { 
+                translateModeAuto.classList.remove('bg-purple-600');
+                translateModeAuto.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                translateModeToggle.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+                translateModeToggle.classList.add('bg-purple-600');
+                
+                if (newMode === 'en-pt') {
+                    translateModeToggle.innerHTML = "EN &rarr; PT";
+                } else { // 'pt-en'
+                    translateModeToggle.innerHTML = "PT &rarr; EN";
+                }
+            }
+        }
+
+        // --- Lógica do Quiz ---
+
+        /**
+         * Inicia o quiz com as perguntas recebidas.
+         */
+        function startQuiz(questions) {
+            currentQuizQuestions = questions;
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = []; 
+            
+            if (!quizQuestionView || !quizResultsView || !quizOverlay) return;
+            
+            quizQuestionView.classList.remove('hidden');
+            quizResultsView.classList.add('hidden');
+            quizOverlay.classList.remove('hidden');
+            
+            displayCurrentQuestion();
+        }
+
+        /**
+         * Mostra a pergunta atual no modal.
+         */
+        function displayCurrentQuestion() {
+            if (currentQuestionIndex >= currentQuizQuestions.length) {
+                showQuizResults();
+                return;
+            }
+
+            const q = currentQuizQuestions[currentQuestionIndex];
+            answerSelected = false; 
+            
+            if (!quizProgress || !quizQuestion || !quizOptions || !quizFeedback || !quizNextBtn) return;
+            
+            quizProgress.textContent = `Pergunta ${currentQuestionIndex + 1} / ${currentQuizQuestions.length}`;
+            quizQuestion.textContent = q.question;
+            
+            quizOptions.innerHTML = ''; 
+            q.options.forEach(optionText => {
+                const optionBtn = document.createElement('button');
+                optionBtn.textContent = optionText;
+                optionBtn.className = "quiz-option w-full text-left p-4 bg-gray-700 rounded-lg hover:bg-gray-600";
+                optionBtn.onclick = () => selectAnswer(optionBtn, optionText, q); 
+                quizOptions.appendChild(optionBtn);
+            });
+
+            quizFeedback.classList.add('hidden');
+            quizNextBtn.classList.add('hidden');
+        }
+
+        /**
+         * Chamada quando o usuário clica em uma opção.
+         */
+        function selectAnswer(selectedButton, selectedOption, q) {
+            if (answerSelected) return; 
+            answerSelected = true;
+            
+            const correctAnswer = q.correctAnswer;
+            if (!quizNextBtn || !quizFeedback || !quizOptions) return;
+            
+            quizNextBtn.classList.remove('hidden');
+            const isCorrect = (selectedOption === correctAnswer);
+            
+            userAnswers.push({
+                question: q.question,
+                selected: selectedOption,
+                correct: correctAnswer,
+                explanation: q.explanation,
+                isCorrect: isCorrect
+            });
+
+            if (isCorrect) {
+                score++;
+                selectedButton.classList.add('correct');
+                quizFeedback.textContent = "Correto!";
+                quizFeedback.className = "mt-4 text-lg font-medium text-green-400";
+            } else {
+                selectedButton.classList.add('incorrect');
+                quizFeedback.textContent = `Errado! A resposta correta era: ${correctAnswer}`;
+                quizFeedback.className = "mt-4 text-lg font-medium text-red-400";
+                
+                Array.from(quizOptions.children).forEach(btn => {
+                    if (btn.textContent === correctAnswer) {
+                        btn.classList.add('correct');
+                    }
+                });
+            }
+            quizFeedback.classList.remove('hidden');
+
+            if (currentQuestionIndex === currentQuizQuestions.length - 1) {
+                quizNextBtn.textContent = "Ver Resultados";
+            } else {
+                quizNextBtn.textContent = "Próxima Pergunta";
+            }
+        }
+
+        /**
+         * Mostra a tela de resultados finais.
+         */
+        function showQuizResults() {
+            if (!quizQuestionView || !quizResultsView || !quizScore || !quizReviewArea || !quizReviewList) return;
+
+            quizQuestionView.classList.add('hidden');
+            quizResultsView.classList.remove('hidden');
+            quizScore.textContent = `Você acertou ${score} de ${currentQuizQuestions.length}!`;
+            
+            quizReviewList.innerHTML = '';
+            
+            const incorrectAnswers = userAnswers.filter(a => !a.isCorrect);
+            
+            if (incorrectAnswers.length > 0) {
+                quizReviewArea.classList.remove('hidden');
+                
+                incorrectAnswers.forEach(answer => {
+                    const item = document.createElement('div');
+                    item.className = 'review-item';
+                    item.innerHTML = `
+                        <p class="review-question">${answer.question}</p>
+                        <p class="review-your-answer"><strong>Sua resposta:</strong> ${answer.selected}</p>
+                        <p class="review-correct-answer"><strong>Correta:</strong> ${answer.correct}</p>
+                        <p class="review-explanation">${answer.explanation}</p>
+                    `;
+                    quizReviewList.appendChild(item);
+                });
+                
+            } else {
+                quizReviewArea.classList.add('hidden');
+            }
+        }
+
+        // --- Chamar o Post-it na Carga ---
+        updatePostIt();
+        
+        // --- Timer para atualizar os post-its ---
+        setInterval(updatePostIt, FIVE_MINUTES_MS);
+
+        // --- Event Listeners Principais ---
+
+        if (generateQuizBtn) {
+            generateQuizBtn.addEventListener('click', () => {
+                const input = learnedInput.value.trim();
+                if (input) {
+                    callGeminiJson(input, systemPrompt_Quiz, quizSchema, loadingQuiz, generateQuizBtn);
+                } else {
+                    showAlert("Entrada Vazia", "Por favor, escreva o que você aprendeu antes de gerar o quiz.");
+                }
+            });
+        }
+        
+        if (explainBtn) {
+            explainBtn.addEventListener('click', () => {
+                const input = questionInput.value.trim();
+                if (!input) {
+                    showAlert("Entrada Vazia", "Por favor, digite sua dúvida antes de pedir uma explicação.");
+                    return;
+                }
+                
+                if (!loadingExplanation || !explanationOutput || !explainBtn) return;
+
+                loadingExplanation.classList.remove('hidden');
+                loadingExplanation.classList.add('flex');
+                explanationOutput.classList.add('hidden'); 
+                explanationOutput.innerHTML = '';
+                explainBtn.disabled = true;
+                
+                if (questionInput) questionInput.value = '';
+
+                const payload = {
+                    contents: [{ parts: [{ text: input }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt_Explanation }] },
+                };
+
+                makeApiCall(payload, 
+                    (text) => {
+                        if (explanationModalContent) explanationModalContent.innerHTML = text; 
+                        if (explanationModalOverlay) explanationModalOverlay.classList.remove('hidden');
+                    }, 
+                    (error) => {
+                        showAlert("Erro na API", `Ocorreu um erro: ${error.message}`);
+                    }, 
+                    () => {
+                        loadingExplanation.classList.add('hidden');
+                        loadingExplanation.classList.remove('flex');
+                        explainBtn.disabled = false;
+                    }
+                );
+            });
+        }
+
+        if (translateBtn) {
+            translateBtn.addEventListener('click', () => {
+                const input = translateInput.value.trim();
+                if (input) {
+                    let currentSystemPrompt = '';
+                    switch(translateMode) {
+                        case 'en-pt':
+                            currentSystemPrompt = "Traduza o seguinte texto do INGLÊS para o PORTUGUÊS (Brasil). Responda apenas com a tradução.";
+                            break;
+                        case 'pt-en':
+                            currentSystemPrompt = "Traduza o seguinte texto do PORTUGS (Brasil) para o INGLS. Responda apenas com a tradução.";
+                            break;
+                        case 'auto':
+                        default:
+                            currentSystemPrompt = `
+                                Você é um tradutor. O usuário fornecerá um texto.
+                                1. Se o texto estiver em inglês, traduza para o português do Brasil.
+                                2. Se o texto estiver em português, traduza para o inglês.
+                                Responda *apenas* com a tradução direta, sem nenhuma explicação ou texto adicional.
+                            `;
+                    }
+                    
+                    callGeminiText(input, currentSystemPrompt, translationOutput, loadingTranslation, translateBtn);
+                }
+            });
+        }
+        
+        // --- Listeners do Post-it (MODIFICADO para 6) ---
+        for (let i = 1; i <= TOTAL_POST_ITS; i++) {
+            const postIt = document.getElementById(`post-it-${i}`);
+            if (postIt) {
+                postIt.addEventListener('click', () => handlePostItClick(i));
+            }
+        }
+
+        // --- Listeners do Tradutor ---
+        if (translateModeAuto) {
+            translateModeAuto.addEventListener('click', () => updateTranslateMode('auto'));
+        }
+        if (translateModeToggle) {
+            translateModeToggle.addEventListener('click', () => {
+                if (translateMode === 'en-pt' || translateMode === 'auto') {
+                    updateTranslateMode('pt-en');
+                } else {
+                    updateTranslateMode('en-pt');
+                }
+            });
+        }
+
+        // --- Listeners do Quiz ---
+        if (quizNextBtn) {
+            quizNextBtn.addEventListener('click', () => {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+            });
+        }
+        
+        if (quizCloseBtn) {
+            quizCloseBtn.addEventListener('click', () => {
+                if (quizOverlay) quizOverlay.classList.add('hidden');
+            });
+        }
+
+        if (quizCloseUniversalBtn) {
+            quizCloseUniversalBtn.addEventListener('click', () => {
+                if (quizOverlay) quizOverlay.classList.add('hidden');
+            });
+        }
+
+        // --- Listeners do Modal de Explicação ---
+        if (explanationModalCloseXBtn) {
+            explanationModalCloseXBtn.addEventListener('click', () => {
+                if (explanationModalOverlay) explanationModalOverlay.classList.add('hidden');
+            });
+        }
+        if (explanationModalCloseBottomBtn) {
+            explanationModalCloseBottomBtn.addEventListener('click', () => {
+                if (explanationModalOverlay) explanationModalOverlay.classList.add('hidden');
+            });
+        }
+
+        // --- Adiciona listeners para a tecla "Enter" ---
+        if (learnedInput) {
+            learnedInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (generateQuizBtn) generateQuizBtn.click();
+                }
+            });
+        }
+
+        if (questionInput) {
+            questionInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (explainBtn) explainBtn.click();
+                }
+            });
+        }
+
+        if (translateInput) {
+            translateInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (translateBtn) translateBtn.click();
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
+
