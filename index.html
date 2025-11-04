@@ -37,40 +37,47 @@
             margin-top: 1rem; /* mt-4 */
             min-height: 100px;
         }
-        /* Estilos para o Post-it */
+        
+        /* Estilos para o Post-it (MODIFICADO) */
         .post-it {
             font-family: 'Kalam', cursive;
             color: #374151; /* Tailwind gray-700 */
             padding: 1rem;
             border-radius: 0.5rem; /* rounded-lg */
             box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
-            max-width: 90%;
-            width: 280px; /* Reduzido de 320px */
-            min-height: 120px; /* Altura mínima para alinhamento */
+            
+            /* Tamanho reduzido */
+            width: 200px; 
+            min-height: 100px; 
+            max-width: 80vw; /* Ajuste para telas pequenas */
+            
+            /* Centralização */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            
             transition: transform 0.2s ease;
+            cursor: pointer; /* Indica clicável */
         }
         .post-it:hover {
             transform: rotate(0deg) scale(1.05) !important; /* Efeito de hover anula rotação */
         }
+        
         /* Cores e Rotações */
-        .post-it-1 {
-            background-color: #fef08a; /* Tailwind yellow-200 */
-            transform: rotate(-3deg);
-        }
-        .post-it-2 {
-            background-color: #a7f3d0; /* Tailwind green-200 */
-            transform: rotate(1.5deg);
-        }
-        .post-it-3 {
-            background-color: #bfd8ff; /* Tailwind blue-200 */
-            transform: rotate(-1.5deg);
-        }
+        .post-it-1 { background-color: #fef08a; transform: rotate(-3deg); } /* Amarelo */
+        .post-it-2 { background-color: #a7f3d0; transform: rotate(1.5deg); } /* Verde */
+        .post-it-3 { background-color: #bfd8ff; transform: rotate(-1.5deg); } /* Azul */
+        .post-it-4 { background-color: #fbcfe8; transform: rotate(2deg); } /* Rosa */
+        .post-it-5 { background-color: #fde68a; transform: rotate(-2.5deg); } /* Laranja */
+        .post-it-6 { background-color: #ddd6fe; transform: rotate(1deg); } /* Roxo */
+
         .post-it-phrase {
-            font-size: 1.25rem;
+            font-size: 1.125rem; /* Levemente menor */
             font-weight: 700;
         }
         .post-it-translation {
-            font-size: 1rem; /* Reduzido de 1.125rem */
+            font-size: 0.875rem; /* Menor */
             color: #4b5563; /* Tailwind gray-600 */
             margin-top: 0.5rem; /* mt-2 */
         }
@@ -94,6 +101,45 @@
             background-color: #dc2626; /* bg-red-600 */
             color: white;
         }
+        
+        /* Estilos da Revisão do Quiz */
+        #quiz-review-list {
+            max-height: 30vh; /* Altura máxima para a lista */
+            overflow-y: auto; /* Scroll se necessário */
+            text-align: left;
+            margin-top: 1.5rem; /* mt-6 */
+            border-top: 1px solid #374151; /* border-gray-700 */
+            padding-top: 1.5rem; /* pt-6 */
+        }
+        .review-item {
+            background-color: #1f2937; /* bg-gray-800 */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            margin-bottom: 1rem; /* mb-4 */
+            border-left: 4px solid #dc2626; /* border-red-600 */
+        }
+        .review-item p {
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .review-item .review-question {
+            font-weight: 600; /* semibold */
+            color: #f3f4f6; /* gray-100 */
+        }
+        .review-item .review-your-answer {
+            color: #fca5a5; /* red-300 */
+        }
+        .review-item .review-correct-answer {
+            color: #86efac; /* green-300 */
+        }
+        .review-item .review-explanation {
+            font-style: italic;
+            color: #9ca3af; /* gray-400 */
+            font-size: 0.875rem; /* text-sm */
+            border-top: 1px solid #374151; /* border-gray-700 */
+            padding-top: 0.5rem; /* pt-2 */
+            margin-top: 0.75rem; /* mt-3 */
+        }
+
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100 min-h-screen p-4 md:p-8">
@@ -104,24 +150,39 @@
             <p class="text-lg text-gray-400 mt-2">Você precisa aprender Inglês!</p>
         </header>
 
-        <!-- Seção: Post-it -->
+        <!-- Seção: Post-it (MODIFICADO COM 6) -->
         <section class="mb-12">
-            <h2 class="text-2xl font-semibold text-center text-gray-300 mb-6" style="font-family: 'Inter', sans-serif;">Frases para Praticar</h2>
+            <h2 class="text-2xl font-semibold text-center text-gray-300 mb-8" style="font-family: 'Inter', sans-serif;">Frases para Praticar</h2>
             <div class="flex justify-center items-start gap-6 lg:gap-8 flex-wrap">
                 <!-- Post-it 1 -->
-                <div class="post-it post-it-1">
+                <div id="post-it-1" class="post-it post-it-1">
                     <p id="post-it-phrase-1" class="post-it-phrase">Loading...</p>
                     <p id="post-it-translation-1" class="post-it-translation">Carregando...</p>
                 </div>
                 <!-- Post-it 2 -->
-                <div class="post-it post-it-2">
+                <div id="post-it-2" class="post-it post-it-2">
                     <p id="post-it-phrase-2" class="post-it-phrase">Loading...</p>
                     <p id="post-it-translation-2" class="post-it-translation">Carregando...</p>
                 </div>
                 <!-- Post-it 3 -->
-                <div class="post-it post-it-3">
+                <div id="post-it-3" class="post-it post-it-3">
                     <p id="post-it-phrase-3" class="post-it-phrase">Loading...</p>
                     <p id="post-it-translation-3" class="post-it-translation">Carregando...</p>
+                </div>
+                <!-- Post-it 4 (NOVO) -->
+                <div id="post-it-4" class="post-it post-it-4">
+                    <p id="post-it-phrase-4" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-4" class="post-it-translation">Carregando...</p>
+                </div>
+                 <!-- Post-it 5 (NOVO) -->
+                <div id="post-it-5" class="post-it post-it-5">
+                    <p id="post-it-phrase-5" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-5" class="post-it-translation">Carregando...</p>
+                </div>
+                 <!-- Post-it 6 (NOVO) -->
+                <div id="post-it-6" class="post-it post-it-6">
+                    <p id="post-it-phrase-6" class="post-it-phrase">Loading...</p>
+                    <p id="post-it-translation-6" class="post-it-translation">Carregando...</p>
                 </div>
             </div>
         </section>
@@ -129,7 +190,7 @@
         <!-- Container principal com três colunas -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-            <!-- Coluna 1: Gerador de Quiz (MODIFICADO) -->
+            <!-- Coluna 1: Gerador de Quiz -->
             <div class="bg-gray-800 p-6 rounded-lg shadow-xl flex flex-col">
                 <h2 class="text-2xl font-semibold mb-4 text-white">1. Pratique com um Quiz</h2>
                 <label for="learned-input" class="block mb-2 font-medium text-gray-300">O que você aprendeu hoje?</label>
@@ -143,8 +204,6 @@
                     <div class="loader"></div>
                     <p class="text-gray-400 mt-2">Gerando quiz...</p>
                 </div>
-                
-                <!-- A área de saída de perguntas foi removida -->
             </div>
 
             <!-- Coluna 2: Tira-Dúvidas -->
@@ -170,17 +229,10 @@
                 <h2 class="text-2xl font-semibold mb-4 text-white">3. Tradutor Rápido</h2>
                 <label for="translate-input" class="block mb-2 font-medium text-gray-300">Digite para traduzir</label>
                 
-                <!-- NOVO: Seletor de Idioma (MODIFICADO) -->
+                <!-- Seletor de Idioma MODIFICADO -->
                 <div class="flex space-x-2 mb-3">
                     <button id="translate-mode-auto" class="translate-mode-btn flex-1 bg-purple-600 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">Auto</button>
-                    <button id="translate-mode-toggle" class="translate-mode-btn flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-1">
-                        <span id="toggle-from">EN</span>
-                        <!-- Ícone de troca -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-3-3m3 3l-3 3m0 6H4m0 0l3 3m-3-3l3-3" />
-                        </svg>
-                        <span id="toggle-to">PT</span>
-                    </button>
+                    <button id="translate-mode-toggle" class="translate-mode-btn flex-1 bg-gray-600 hover:bg-gray-500 text-white py-2 px-3 rounded-lg text-sm font-medium transition-colors">EN &rarr; PT</button>
                 </div>
                 
                 <textarea id="translate-input" rows="4" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-gray-100 focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="Ex: How are you?"></textarea>
@@ -202,7 +254,7 @@
         </div>
     </div>
 
-    <!-- Modal de Alerta Personalizado (NOVO) -->
+    <!-- Modal de Alerta Personalizado -->
     <div id="alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(17, 24, 39, 0.9);">
         <div class="bg-gray-800 rounded-lg shadow-xl max-w-sm w-full p-6">
             <h3 id="alert-title" class="text-xl font-bold text-yellow-400 mb-4">Atenção</h3>
@@ -213,7 +265,7 @@
         </div>
     </div>
 
-    <!-- Modal de Explicação (NOVO) -->
+    <!-- Modal de Explicação -->
     <div id="explanation-modal-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4" style="background-color: rgba(17, 24, 39, 0.9);">
         <div id="explanation-modal" class="relative bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full p-6 md:p-8">
             
@@ -238,11 +290,11 @@
         </div>
     </div>
 
-    <!-- Modal de Quiz (NOVO) -->
+    <!-- Modal de Quiz -->
     <div id="quiz-overlay" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
         <div id="quiz-modal" class="relative bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full p-6 md:p-8">
             
-            <!-- Botão de Fechar Universal (NOVO) -->
+            <!-- Botão de Fechar Universal -->
             <button id="quiz-close-universal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -272,8 +324,17 @@
             <!-- Tela de Resultados -->
             <div id="quiz-results-view" class="hidden text-center">
                 <h2 class="text-3xl font-bold text-green-400 mb-4">Quiz Concluído!</h2>
-                <p id="quiz-score" class="text-2xl text-white mb-8">Você acertou 3 de 5!</p>
-                <button id="quiz-close-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
+                <p id="quiz-score" class="text-2xl text-white mb-6">Você acertou 3 de 5!</p>
+                
+                <!-- (NOVO) Área de Revisão -->
+                <div id="quiz-review-area" class="hidden">
+                    <h3 class="text-xl font-semibold text-gray-200 mb-4">Revise seus erros:</h3>
+                    <div id="quiz-review-list">
+                        <!-- Itens de revisão serão injetados aqui -->
+                    </div>
+                </div>
+                
+                <button id="quiz-close-btn" class="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300">
                     Fechar
                 </button>
             </div>
@@ -286,6 +347,8 @@
         // --- Configuração da API ---
         const apiKey = "AIzaSyCtrEyKSS5OVtlWOg7WaqE0vJ-0ZksBTPY"; // Deixe em branco, será gerenciado pelo ambiente
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+        const FIVE_MINUTES_MS = 5 * 60 * 1000;
+        const TOTAL_POST_ITS = 6; // NOVO
 
         // --- Lista de Frases para o Post-it ---
         const learnedPhrases = [
@@ -303,8 +366,18 @@
             { en: "Keep up the good work.", pt: "Continue o bom trabalho." },
             { en: "By the way...", pt: "A propósito..." },
             { en: "Let me know.", pt: "Me avise." },
-            { en: "It rings a bell.", pt: "Isso me é familiar." }
+            { en: "It rings a bell.", pt: "Isso me é familiar." },
+            { en: "I'll be right back.", pt: "Eu já volto." },
+            { en: "That's awesome!", pt: "Isso é incrível!" },
+            { en: "What's wrong?", pt: "O que há de errado?" },
+            { en: "Good for you.", pt: "Bom para você." },
+            { en: "I have no idea.", pt: "Não faço ideia." }
         ];
+        
+        // --- Estado Global ---
+        // Inicializa com os 6 primeiros índices
+        let currentPostItIndices = Array.from(Array(TOTAL_POST_ITS).keys()); 
+        let lastPostItUpdate = 0; // Para o timer de 5 min
 
         // --- Seletores do DOM (Principais) ---
         const learnedInput = document.getElementById('learned-input');
@@ -321,20 +394,17 @@
         const loadingTranslation = document.getElementById('loading-translation');
         const translationOutput = document.getElementById('translation-output');
 
-        // --- Seletores do DOM (Tradutor - MODIFICADO) ---
+        // --- Seletores do DOM (Tradutor) ---
         const translateModeAuto = document.getElementById('translate-mode-auto');
-        const translateModeToggle = document.getElementById('translate-mode-toggle'); // NOVO
-        const toggleFrom = document.getElementById('toggle-from'); // NOVO
-        const toggleTo = document.getElementById('toggle-to'); // NOVO
-        const translateModeButtons = [translateModeAuto, translateModeToggle]; // ATUALIZADO
-
+        const translateModeToggle = document.getElementById('translate-mode-toggle');
+        
         // --- Seletores do DOM (Modal de Alerta) ---
         const alertModal = document.getElementById('alert-modal');
         const alertTitle = document.getElementById('alert-title');
         const alertMessage = document.getElementById('alert-message');
         const alertCloseBtn = document.getElementById('alert-close-btn');
 
-        // --- Seletores do DOM (Modal de Explicação - NOVO) ---
+        // --- Seletores do DOM (Modal de Explicação) ---
         const explanationModalOverlay = document.getElementById('explanation-modal-overlay');
         const explanationModalContent = document.getElementById('explanation-modal-content');
         const explanationModalCloseXBtn = document.getElementById('explanation-modal-close-x-btn');
@@ -351,18 +421,21 @@
         const quizNextBtn = document.getElementById('quiz-next-btn');
         const quizScore = document.getElementById('quiz-score');
         const quizCloseBtn = document.getElementById('quiz-close-btn');
-        const quizCloseUniversalBtn = document.getElementById('quiz-close-universal-btn'); // NOVO
+        const quizCloseUniversalBtn = document.getElementById('quiz-close-universal-btn');
+        const quizReviewArea = document.getElementById('quiz-review-area');
+        const quizReviewList = document.getElementById('quiz-review-list');
 
         // --- Estado do Quiz ---
         let currentQuizQuestions = [];
         let currentQuestionIndex = 0;
         let score = 0;
         let answerSelected = false;
-        let translateMode = 'auto'; // NOVO: Estado do tradutor
+        let translateMode = 'auto'; 
+        let userAnswers = []; 
 
         // --- Esquemas e Prompts do Sistema ---
 
-        // Esquema JSON para o Quiz (NOVO)
+        // Esquema JSON para o Quiz (MODIFICADO)
         const quizSchema = {
             type: "OBJECT",
             properties: {
@@ -385,12 +458,16 @@
                             correctAnswer: { 
                                 type: "STRING",
                                 description: "O texto exato de uma das 'options' que é a resposta correta."
+                            },
+                            explanation: { 
+                                type: "STRING",
+                                description: "Uma breve explicação (em português) de por que a resposta está correta, focando na tradução ou na regra gramatical."
                             }
                         },
-                        required: ["question", "options", "correctAnswer"]
+                        required: ["question", "options", "correctAnswer", "explanation"]
                     },
-                    minItems: 15, /* MUDADO */
-                    maxItems: 20  /* MUDADO */
+                    minItems: 5, 
+                    maxItems: 10 
                 }
             },
             required: ["questions"]
@@ -398,7 +475,7 @@
 
         const systemPrompt_Quiz = `
             Você é um professor de inglês. O usuário fornecerá um texto sobre o que aprendeu (ex: "apple (maçã), book (livro), a frase 'an apple a day'").
-            Crie um quiz de 15 a 20 perguntas baseadas *apenas* nesse texto.
+            Crie um quiz de 5 a 10 perguntas baseadas *apenas* nesse texto.
             Misture os tipos de perguntas:
             1.  Tradução (Inglês -> Português): (ex: "Qual o significado de 'book'?", com opções em português).
             2.  Tradução (Português -> Inglês): (ex: "Qual palavra significa 'maçã'?", com opções em inglês).
@@ -406,7 +483,8 @@
             
             As opções de resposta devem ser 3 ou 4.
             A 'correctAnswer' deve ser *exatamente* igual a uma das 'options'.
-            Responda *apenas* com o objeto JSON formatado de acordo com o esquema fornecido.
+            A 'explanation' deve ser uma explicação curta e clara, em português, do porquê a resposta é correta.
+            Responda *apenas* com o objeto JSON formatado de acordo com o esquema fornecido, sem negrito ou markdown.
         `;
 
         const systemPrompt_Explanation = `
@@ -414,10 +492,8 @@
             Explique o conceito de forma clara e simples, em português, como se fosse para um iniciante.
             Use marcadores (bullet points) para organizar a explicação.
             Sempre inclua exemplos práticos em inglês, com a tradução em português ao lado.
-            NÃO use formatação em negrito (markdown com ** ou __) na sua resposta.
+            IMPORTANTE: Não use NENHUMA formatação de negrito (markdown **texto** ou tags HTML <b>). Apenas texto plano.
         `;
-
-        /* PROMPT DE TRADUÇÃO REMOVIDO DAQUI - será dinâmico */
 
         // --- Lógica Principal ---
 
@@ -425,55 +501,91 @@
          * Mostra o modal de alerta personalizado.
          */
         function showAlert(title, message) {
-            alertTitle.textContent = title;
-            alertMessage.textContent = message;
-            alertModal.classList.remove('hidden');
+            if (alertTitle) alertTitle.textContent = title;
+            if (alertMessage) alertMessage.textContent = message;
+            if (alertModal) alertModal.classList.remove('hidden');
         }
-        alertCloseBtn.addEventListener('click', () => alertModal.classList.add('hidden'));
-
+        
+        if (alertCloseBtn) {
+            alertCloseBtn.addEventListener('click', () => alertModal.classList.add('hidden'));
+        }
 
         /**
-         * Atualiza os 3 post-its com um novo set de frases a cada 5 minutos
+         * Atualiza os 6 post-its com um novo set de frases (se 5 min passaram)
          */
         function updatePostIt() {
-            const FIVE_MINUTES_MS = 5 * 60 * 1000; // MUDADO: De 12 horas para 5 minutos
-            const lastUpdate = localStorage.getItem('postItLastUpdate');
-            let baseIndex = localStorage.getItem('postItBaseIndex');
             const currentTime = new Date().getTime();
-
-            baseIndex = baseIndex ? parseInt(baseIndex) : 0;
-            let currentBaseIndex;
-
-            if (!lastUpdate || (currentTime - parseInt(lastUpdate) > FIVE_MINUTES_MS)) { // MUDADO: Usando 5 minutos
-                const newBaseIndex = (baseIndex + 3) % learnedPhrases.length;
-                localStorage.setItem('postItBaseIndex', newBaseIndex.toString());
-                localStorage.setItem('postItLastUpdate', currentTime.toString());
-                currentBaseIndex = newBaseIndex;
-            } else {
-                currentBaseIndex = baseIndex;
-            }
-
-            // --- CORREÇÃO: Bloco 'for' e '}' re-adicionados ---
-            for (let i = 0; i < 3; i++) {
-                const phraseIndex = (currentBaseIndex + i) % learnedPhrases.length;
-                const phrase = learnedPhrases[phraseIndex];
-                const phraseEl = document.getElementById(`post-it-phrase-${i + 1}`);
-                const translationEl = document.getElementById(`post-it-translation-${i + 1}`);
-
-                if (phraseEl && translationEl) {
-                    phraseEl.textContent = phrase.en;
-                    translationEl.textContent = phrase.pt;
-                } else {
-                    console.error(`Elementos do post-it ${i + 1} não encontrados.`);
+            
+            // Só atualiza se for a primeira vez ou se passaram 5 minutos
+            if (lastPostItUpdate === 0 || (currentTime - lastPostItUpdate > FIVE_MINUTES_MS)) {
+                lastPostItUpdate = currentTime;
+                
+                let newIndices = [];
+                let attempts = 0; // Prevenção de loop infinito
+                
+                while(newIndices.length < TOTAL_POST_ITS && attempts < 100) {
+                    const randomIndex = Math.floor(Math.random() * learnedPhrases.length);
+                    // Garante que o índice não esteja já na lista
+                    if (!newIndices.includes(randomIndex)) {
+                        newIndices.push(randomIndex);
+                    }
+                    attempts++;
+                }
+                
+                // Se falhar em obter 6 únicos (poucas frases), apenas preenche
+                while (newIndices.length < TOTAL_POST_ITS) {
+                    newIndices.push(Math.floor(Math.random() * learnedPhrases.length));
+                }
+                
+                currentPostItIndices = newIndices;
+                
+                for (let i = 0; i < TOTAL_POST_ITS; i++) {
+                    displayPostItPhrase(i + 1, currentPostItIndices[i]);
                 }
             }
         }
-        // --- Fim da Correção ---
+        
+        /**
+         * Atualiza o conteúdo de um post-it específico.
+         */
+        function displayPostItPhrase(postItId, phraseIndex) {
+            const phrase = learnedPhrases[phraseIndex % learnedPhrases.length]; // Garante que o índice é válido
+            const phraseEl = document.getElementById(`post-it-phrase-${postItId}`);
+            const translationEl = document.getElementById(`post-it-translation-${postItId}`);
+
+            if (phraseEl && translationEl) {
+                phraseEl.textContent = phrase.en;
+                translationEl.textContent = phrase.pt;
+            } else {
+                console.error(`Elementos do post-it ${postItId} não encontrados.`);
+            }
+        }
+        
+        /**
+         * Pega uma nova frase aleatória para um post-it clicado.
+         */
+         function handlePostItClick(postItId) {
+             let newIndex;
+             let attempts = 0;
+             do {
+                 newIndex = Math.floor(Math.random() * learnedPhrases.length);
+                 attempts++;
+             // Garante que a nova frase não seja nenhuma das 6 já exibidas
+             } while (currentPostItIndices.includes(newIndex) && attempts < 50);
+             
+             // Atualiza o índice para este post-it (id é 1-based, array é 0-based)
+             currentPostItIndices[postItId - 1] = newIndex;
+             // Atualiza a exibição
+             displayPostItPhrase(postItId, newIndex);
+         }
+
 
         /**
          * Chama a API Gemini para respostas em TEXTO (Explicação, Tradução).
          */
         async function callGeminiText(userQuery, systemPrompt, outputElement, loadingElement, buttonElement) {
+            if (!outputElement || !loadingElement || !buttonElement) return;
+            
             loadingElement.classList.remove('hidden');
             loadingElement.classList.add('flex');
             outputElement.classList.add('hidden');
@@ -486,7 +598,7 @@
             };
 
             await makeApiCall(payload, (text) => {
-                outputElement.innerHTML = text; // O pre-wrap no CSS cuida das quebras de linha
+                outputElement.innerHTML = text; 
                 outputElement.classList.remove('hidden');
             }, (error) => {
                 showAlert("Erro na API", `Ocorreu um erro: ${error.message}`);
@@ -501,10 +613,14 @@
          * Chama a API Gemini para respostas em JSON (Quiz).
          */
         async function callGeminiJson(userQuery, systemPrompt, schema, loadingElement, buttonElement) {
+            if (!loadingElement || !buttonElement) return;
+
             loadingElement.classList.remove('hidden');
             loadingElement.classList.add('flex');
             buttonElement.disabled = true;
             buttonElement.textContent = 'Gerando Quiz...';
+            
+            if (learnedInput) learnedInput.value = '';
 
             const payload = {
                 contents: [{ parts: [{ text: userQuery }] }],
@@ -574,7 +690,6 @@
                         console.error(`Tentativa ${retries + 1} falhou:`, error);
                         retries++;
                         if (retries >= maxRetries) {
-                            // Joga o erro para ser pego pelo catch externo
                             throw error;
                         } else {
                             await new Promise(res => setTimeout(res, delay));
@@ -583,15 +698,13 @@
                     }
                 }
             } catch (error) {
-                // Todas as tentativas falharam
                 onError(error);
             } finally {
-                // Este bloco AGORA será executado sempre (sucesso ou falha)
                 if (onFinally) onFinally();
             }
         }
 
-        // --- Lógica do Tradutor (MODIFICADA) ---
+        // --- Lógica do Tradutor (MODIFICADO) ---
         
         /**
          * Atualiza o modo de tradução e o estilo dos botões
@@ -599,30 +712,28 @@
         function updateTranslateMode(newMode) {
             translateMode = newMode;
             
-            // Reseta estilos de todos os botões
-            translateModeButtons.forEach(btn => {
-                btn.classList.remove('bg-purple-600');
-                btn.classList.add('bg-gray-600', 'hover:bg-gray-500');
-            });
+            if (!translateModeAuto || !translateModeToggle) return;
             
-            // Aplica estilo ativo e atualiza texto do toggle
             if (newMode === 'auto') {
                 translateModeAuto.classList.add('bg-purple-600');
                 translateModeAuto.classList.remove('bg-gray-600', 'hover:bg-gray-500');
-            } else if (newMode === 'en-pt') {
-                translateModeToggle.classList.add('bg-purple-600');
+                translateModeToggle.classList.add('bg-gray-600', 'hover:bg-gray-500');
+                translateModeToggle.classList.remove('bg-purple-600');
+            } else { 
+                translateModeAuto.classList.remove('bg-purple-600');
+                translateModeAuto.classList.add('bg-gray-600', 'hover:bg-gray-500');
                 translateModeToggle.classList.remove('bg-gray-600', 'hover:bg-gray-500');
-                toggleFrom.textContent = 'EN';
-                toggleTo.textContent = 'PT';
-            } else if (newMode === 'pt-en') {
                 translateModeToggle.classList.add('bg-purple-600');
-                translateModeToggle.classList.remove('bg-gray-600', 'hover:bg-gray-500');
-                toggleFrom.textContent = 'PT';
-                toggleTo.textContent = 'EN';
+                
+                if (newMode === 'en-pt') {
+                    translateModeToggle.innerHTML = "EN &rarr; PT";
+                } else { // 'pt-en'
+                    translateModeToggle.innerHTML = "PT &rarr; EN";
+                }
             }
         }
 
-        // --- Lógica do Quiz (NOVAS FUNÇÕES) ---
+        // --- Lógica do Quiz ---
 
         /**
          * Inicia o quiz com as perguntas recebidas.
@@ -631,12 +742,13 @@
             currentQuizQuestions = questions;
             currentQuestionIndex = 0;
             score = 0;
+            userAnswers = []; 
+            
+            if (!quizQuestionView || !quizResultsView || !quizOverlay) return;
             
             quizQuestionView.classList.remove('hidden');
             quizResultsView.classList.add('hidden');
             quizOverlay.classList.remove('hidden');
-            
-            learnedInput.value = ""; // LIMPA A CAIXA DE TEXTO (BLOCO 1)
             
             displayCurrentQuestion();
         }
@@ -651,17 +763,19 @@
             }
 
             const q = currentQuizQuestions[currentQuestionIndex];
-            answerSelected = false; // Reseta a seleção de resposta
+            answerSelected = false; 
+            
+            if (!quizProgress || !quizQuestion || !quizOptions || !quizFeedback || !quizNextBtn) return;
             
             quizProgress.textContent = `Pergunta ${currentQuestionIndex + 1} / ${currentQuizQuestions.length}`;
             quizQuestion.textContent = q.question;
             
-            quizOptions.innerHTML = ''; // Limpa opções anteriores
+            quizOptions.innerHTML = ''; 
             q.options.forEach(optionText => {
                 const optionBtn = document.createElement('button');
                 optionBtn.textContent = optionText;
                 optionBtn.className = "quiz-option w-full text-left p-4 bg-gray-700 rounded-lg hover:bg-gray-600";
-                optionBtn.onclick = () => selectAnswer(optionBtn, optionText, q.correctAnswer);
+                optionBtn.onclick = () => selectAnswer(optionBtn, optionText, q); 
                 quizOptions.appendChild(optionBtn);
             });
 
@@ -672,12 +786,23 @@
         /**
          * Chamada quando o usuário clica em uma opção.
          */
-        function selectAnswer(selectedButton, selectedOption, correctAnswer) {
-            if (answerSelected) return; // Impede múltiplas seleções
+        function selectAnswer(selectedButton, selectedOption, q) {
+            if (answerSelected) return; 
             answerSelected = true;
+            
+            const correctAnswer = q.correctAnswer;
+            if (!quizNextBtn || !quizFeedback || !quizOptions) return;
             
             quizNextBtn.classList.remove('hidden');
             const isCorrect = (selectedOption === correctAnswer);
+            
+            userAnswers.push({
+                question: q.question,
+                selected: selectedOption,
+                correct: correctAnswer,
+                explanation: q.explanation,
+                isCorrect: isCorrect
+            });
 
             if (isCorrect) {
                 score++;
@@ -689,7 +814,6 @@
                 quizFeedback.textContent = `Errado! A resposta correta era: ${correctAnswer}`;
                 quizFeedback.className = "mt-4 text-lg font-medium text-red-400";
                 
-                // Destaca a resposta correta
                 Array.from(quizOptions.children).forEach(btn => {
                     if (btn.textContent === correctAnswer) {
                         btn.classList.add('correct');
@@ -698,7 +822,6 @@
             }
             quizFeedback.classList.remove('hidden');
 
-            // Prepara o botão "Próximo"
             if (currentQuestionIndex === currentQuizQuestions.length - 1) {
                 quizNextBtn.textContent = "Ver Resultados";
             } else {
@@ -710,150 +833,205 @@
          * Mostra a tela de resultados finais.
          */
         function showQuizResults() {
+            if (!quizQuestionView || !quizResultsView || !quizScore || !quizReviewArea || !quizReviewList) return;
+
             quizQuestionView.classList.add('hidden');
             quizResultsView.classList.remove('hidden');
             quizScore.textContent = `Você acertou ${score} de ${currentQuizQuestions.length}!`;
+            
+            quizReviewList.innerHTML = '';
+            
+            const incorrectAnswers = userAnswers.filter(a => !a.isCorrect);
+            
+            if (incorrectAnswers.length > 0) {
+                quizReviewArea.classList.remove('hidden');
+                
+                incorrectAnswers.forEach(answer => {
+                    const item = document.createElement('div');
+                    item.className = 'review-item';
+                    item.innerHTML = `
+                        <p class="review-question">${answer.question}</p>
+                        <p class="review-your-answer"><strong>Sua resposta:</strong> ${answer.selected}</p>
+                        <p class="review-correct-answer"><strong>Correta:</strong> ${answer.correct}</p>
+                        <p class="review-explanation">${answer.explanation}</p>
+                    `;
+                    quizReviewList.appendChild(item);
+                });
+                
+            } else {
+                quizReviewArea.classList.add('hidden');
+            }
         }
 
         // --- Chamar o Post-it na Carga ---
         updatePostIt();
+        
+        // --- Timer para atualizar os post-its ---
+        setInterval(updatePostIt, FIVE_MINUTES_MS);
 
         // --- Event Listeners Principais ---
 
-        generateQuizBtn.addEventListener('click', () => {
-            const input = learnedInput.value.trim();
-            if (input) {
-                callGeminiJson(input, systemPrompt_Quiz, quizSchema, loadingQuiz, generateQuizBtn);
-            } else {
-                showAlert("Entrada Vazia", "Por favor, escreva o que você aprendeu antes de gerar o quiz.");
-            }
-        });
-
-        explainBtn.addEventListener('click', () => {
-            const input = questionInput.value.trim();
-            if (!input) {
-                showAlert("Entrada Vazia", "Por favor, digite sua dúvida antes de pedir uma explicação.");
-                return;
-            }
-
-            // Mostrar loading e desabilitar botão
-            loadingExplanation.classList.remove('hidden');
-            loadingExplanation.classList.add('flex');
-            explanationOutput.classList.add('hidden'); // Limpa o output antigo
-            explanationOutput.innerHTML = '';
-            explainBtn.disabled = true;
-
-            const payload = {
-                contents: [{ parts: [{ text: input }] }],
-                systemInstruction: { parts: [{ text: systemPrompt_Explanation }] },
-            };
-
-            // Chamar a API (usando a função de retentativa)
-            makeApiCall(payload, 
-                (text) => {
-                    // Sucesso: Preencher e mostrar o modal
-                    explanationModalContent.innerHTML = text; // Usa a classe .ai-output para formatar
-                    explanationModalOverlay.classList.remove('hidden');
-                    questionInput.value = ""; // LIMPA A CAIXA DE TEXTO (BLOCO 2)
-                }, 
-                (error) => {
-                    // Erro
-                    showAlert("Erro na API", `Ocorreu um erro: ${error.message}`);
-                }, 
-                () => {
-                    // Finally: Esconder loading e reabilitar botão
-                    loadingExplanation.classList.add('hidden');
-                    loadingExplanation.classList.remove('flex');
-                    explainBtn.disabled = false;
+        if (generateQuizBtn) {
+            generateQuizBtn.addEventListener('click', () => {
+                const input = learnedInput.value.trim();
+                if (input) {
+                    callGeminiJson(input, systemPrompt_Quiz, quizSchema, loadingQuiz, generateQuizBtn);
+                } else {
+                    showAlert("Entrada Vazia", "Por favor, escreva o que você aprendeu antes de gerar o quiz.");
                 }
-            );
-        });
-
-        translateBtn.addEventListener('click', () => {
-            const input = translateInput.value.trim();
-            if (input) {
-                // NOVO: Define o prompt do sistema dinamicamente
-                let currentSystemPrompt = '';
-                switch(translateMode) {
-                    case 'en-pt':
-                        currentSystemPrompt = "Traduza o seguinte texto do INGLÊS para o PORTUGUÊS (Brasil). Responda apenas com a tradução.";
-                        break;
-                    case 'pt-en':
-                        currentSystemPrompt = "Traduza o seguinte texto do PORTUGUÊS (Brasil) para o INGLÊS. Responda apenas com a tradução.";
-                        break;
-                    case 'auto':
-                    default:
-                        currentSystemPrompt = `
-                            Você é um tradutor. O usuário fornecerá um texto.
-                            1. Se o texto estiver em inglês, traduza para o português do Brasil.
-                            2. Se o texto estiver em português, traduza para o inglês.
-                            Responda *apenas* com a tradução direta, sem nenhuma explicação ou texto adicional.
-                        `;
+            });
+        }
+        
+        if (explainBtn) {
+            explainBtn.addEventListener('click', () => {
+                const input = questionInput.value.trim();
+                if (!input) {
+                    showAlert("Entrada Vazia", "Por favor, digite sua dúvida antes de pedir uma explicação.");
+                    return;
                 }
                 
-                callGeminiText(input, currentSystemPrompt, translationOutput, loadingTranslation, translateBtn);
-            }
-        });
+                if (!loadingExplanation || !explanationOutput || !explainBtn) return;
 
-        // --- Listeners do Tradutor (MODIFICADOS) ---
-        translateModeAuto.addEventListener('click', () => updateTranslateMode('auto'));
+                loadingExplanation.classList.remove('hidden');
+                loadingExplanation.classList.add('flex');
+                explanationOutput.classList.add('hidden'); 
+                explanationOutput.innerHTML = '';
+                explainBtn.disabled = true;
+                
+                if (questionInput) questionInput.value = '';
+
+                const payload = {
+                    contents: [{ parts: [{ text: input }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt_Explanation }] },
+                };
+
+                makeApiCall(payload, 
+                    (text) => {
+                        if (explanationModalContent) explanationModalContent.innerHTML = text; 
+                        if (explanationModalOverlay) explanationModalOverlay.classList.remove('hidden');
+                    }, 
+                    (error) => {
+                        showAlert("Erro na API", `Ocorreu um erro: ${error.message}`);
+                    }, 
+                    () => {
+                        loadingExplanation.classList.add('hidden');
+                        loadingExplanation.classList.remove('flex');
+                        explainBtn.disabled = false;
+                    }
+                );
+            });
+        }
+
+        if (translateBtn) {
+            translateBtn.addEventListener('click', () => {
+                const input = translateInput.value.trim();
+                if (input) {
+                    let currentSystemPrompt = '';
+                    switch(translateMode) {
+                        case 'en-pt':
+                            currentSystemPrompt = "Traduza o seguinte texto do INGLÊS para o PORTUGUÊS (Brasil). Responda apenas com a tradução.";
+                            break;
+                        case 'pt-en':
+                            currentSystemPrompt = "Traduza o seguinte texto do PORTUGS (Brasil) para o INGLS. Responda apenas com a tradução.";
+                            break;
+                        case 'auto':
+                        default:
+                            currentSystemPrompt = `
+                                Você é um tradutor. O usuário fornecerá um texto.
+                                1. Se o texto estiver em inglês, traduza para o português do Brasil.
+                                2. Se o texto estiver em português, traduza para o inglês.
+                                Responda *apenas* com a tradução direta, sem nenhuma explicação ou texto adicional.
+                            `;
+                    }
+                    
+                    callGeminiText(input, currentSystemPrompt, translationOutput, loadingTranslation, translateBtn);
+                }
+            });
+        }
         
-        translateModeToggle.addEventListener('click', () => {
-            if (translateMode === 'en-pt') {
-                updateTranslateMode('pt-en');
-            } else {
-                // Se for 'auto' ou 'pt-en', muda para 'en-pt'
-                updateTranslateMode('en-pt');
+        // --- Listeners do Post-it (MODIFICADO para 6) ---
+        for (let i = 1; i <= TOTAL_POST_ITS; i++) {
+            const postIt = document.getElementById(`post-it-${i}`);
+            if (postIt) {
+                postIt.addEventListener('click', () => handlePostItClick(i));
             }
-        });
+        }
+
+        // --- Listeners do Tradutor ---
+        if (translateModeAuto) {
+            translateModeAuto.addEventListener('click', () => updateTranslateMode('auto'));
+        }
+        if (translateModeToggle) {
+            translateModeToggle.addEventListener('click', () => {
+                if (translateMode === 'en-pt' || translateMode === 'auto') {
+                    updateTranslateMode('pt-en');
+                } else {
+                    updateTranslateMode('en-pt');
+                }
+            });
+        }
 
         // --- Listeners do Quiz ---
-        quizNextBtn.addEventListener('click', () => {
-            currentQuestionIndex++;
-            displayCurrentQuestion();
-        });
+        if (quizNextBtn) {
+            quizNextBtn.addEventListener('click', () => {
+                currentQuestionIndex++;
+                displayCurrentQuestion();
+            });
+        }
         
-        quizCloseBtn.addEventListener('click', () => {
-            quizOverlay.classList.add('hidden');
-        });
+        if (quizCloseBtn) {
+            quizCloseBtn.addEventListener('click', () => {
+                if (quizOverlay) quizOverlay.classList.add('hidden');
+            });
+        }
 
-        // NOVO LISTENER
-        quizCloseUniversalBtn.addEventListener('click', () => {
-            quizOverlay.classList.add('hidden');
-        });
+        if (quizCloseUniversalBtn) {
+            quizCloseUniversalBtn.addEventListener('click', () => {
+                if (quizOverlay) quizOverlay.classList.add('hidden');
+            });
+        }
 
-        // --- Listeners do Modal de Explicação (NOVOS) ---
-        explanationModalCloseXBtn.addEventListener('click', () => {
-            explanationModalOverlay.classList.add('hidden');
-        });
-        explanationModalCloseBottomBtn.addEventListener('click', () => {
-            explanationModalOverlay.classList.add('hidden');
-        });
+        // --- Listeners do Modal de Explicação ---
+        if (explanationModalCloseXBtn) {
+            explanationModalCloseXBtn.addEventListener('click', () => {
+                if (explanationModalOverlay) explanationModalOverlay.classList.add('hidden');
+            });
+        }
+        if (explanationModalCloseBottomBtn) {
+            explanationModalCloseBottomBtn.addEventListener('click', () => {
+                if (explanationModalOverlay) explanationModalOverlay.classList.add('hidden');
+            });
+        }
 
         // --- Adiciona listeners para a tecla "Enter" ---
-        learnedInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                generateQuizBtn.click();
-            }
-        });
+        if (learnedInput) {
+            learnedInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (generateQuizBtn) generateQuizBtn.click();
+                }
+            });
+        }
 
-        questionInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                explainBtn.click();
-            }
-        });
+        if (questionInput) {
+            questionInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (explainBtn) explainBtn.click();
+                }
+            });
+        }
 
-        translateInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                translateBtn.click();
-            }
-        });
+        if (translateInput) {
+            translateInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    if (translateBtn) translateBtn.click();
+                }
+            });
+        }
 
     </script>
 </body>
 </html>
-
 
