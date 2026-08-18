@@ -353,9 +353,10 @@
 
           
        // --- Configuração da API ---
-const parte1 = "AQ.Ab8RN6Lvh5NHAZGlGRXSYeygtDi";
-const parte2 = "jiwP4VEa1F7nfuaWvwRbSDQ";
-const apiKey = parte1 + parte2;
+const parte1 = "AQ.Ab8RN6INz69q3CZSChI5uNQJ0O8g";
+const parte2 = "W4XWPJpuB18GeDgzcuBhxA";
+const partes = ["AQ.", "PRIMEIRA_METADE_DA_NOVA_CHAVE", "SEGUNDA_METADE_DA_NOVA_CHAVE"];
+const apiKey = partes.join("");
 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
